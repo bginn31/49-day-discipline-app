@@ -39,7 +39,7 @@ button{
 
 <h1>49 Day Discipline</h1>
 
-<h2 id="day">Day 1 / 49</h2>
+<h2 id="day">Day 5 / 49</h2>
 
 <div id="habits"></div>
 
@@ -50,7 +50,6 @@ button{
 <h2 id="streak">🔥 Streak: 0</h2>
 
 <script>
-
 let habits=[
   "Lift Weights",
   "Cardio",
@@ -64,13 +63,14 @@ let habits=[
 
 // Load saved progress or initialize
 let progress=JSON.parse(localStorage.getItem("progress"))||{
-  day:1,
+  day:5, // start on your current challenge day
   streak:0,
   checks:Array(habits.length).fill(false)
 };
 
 let container=document.getElementById("habits");
 
+// Render the habits
 function render(){
   container.innerHTML="";
   
@@ -79,7 +79,7 @@ function render(){
     btn.innerText=habit;
     btn.className=progress.checks[i]?"done":"notdone";
     btn.onclick=()=>{
-      progress.checks[i]=!progress.checks[i]; // toggle
+      progress.checks[i]=!progress.checks[i]; // toggle habit
       save();
       render();
       checkComplete();
@@ -92,24 +92,26 @@ function render(){
   document.getElementById("bar").style.width=(progress.day/49*100)+"%";
 }
 
+// Check if all habits are done
 function checkComplete(){
   if(progress.checks.every(x=>x)){
     setTimeout(()=>{
       alert("All habits done! 🎉");
       progress.streak++;
       progress.day++;
-      progress.checks=Array(habits.length).fill(false); // reset all for next day
+      progress.checks=Array(habits.length).fill(false); // reset for next day
       save();
       render();
     },300);
   }
 }
 
+// Save progress
 function save(){
   localStorage.setItem("progress",JSON.stringify(progress));
 }
 
-// initialize
+// Initialize
 render();
 
 </script>
