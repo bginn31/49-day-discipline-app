@@ -5,37 +5,36 @@
 <title>49 Day Discipline</title>
 <style>
 body{
-font-family:Arial;
-background:#111;
-color:white;
-text-align:center;
-padding:20px;
+  font-family:Arial;
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:20px;
 }
 h1{color:#00ff88;}
 button{
-padding:15px;
-margin:8px;
-border:none;
-border-radius:10px;
-font-size:16px;
+  padding:15px;
+  margin:8px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
 }
 .done{background:#00ff88;color:black;}
 .notdone{background:#333;color:white;}
 .progress{
-width:100%;
-background:#333;
-border-radius:20px;
-margin-top:20px;
+  width:100%;
+  background:#333;
+  border-radius:20px;
+  margin-top:20px;
 }
 .bar{
-height:25px;
-background:#00ff88;
-border-radius:20px;
-width:0%;
+  height:25px;
+  background:#00ff88;
+  border-radius:20px;
+  width:0%;
 }
 </style>
 </head>
-
 <body>
 
 <h1>49 Day Discipline</h1>
@@ -45,7 +44,7 @@ width:0%;
 <div id="habits"></div>
 
 <div class="progress">
-<div class="bar" id="bar"></div>
+  <div class="bar" id="bar"></div>
 </div>
 
 <h2 id="streak">🔥 Streak: 0</h2>
@@ -53,93 +52,66 @@ width:0%;
 <script>
 
 let habits=[
-"Lift Weights",
-"Cardio",
-"Eat Clean",
-"No Junk Food",
-"Faith / Bible",
-"Drink 3L Water",
-"Film Content",
-"Journal"
+  "Lift Weights",
+  "Cardio",
+  "Eat Clean",
+  "No Junk Food",
+  "Faith / Bible",
+  "Drink 3L Water",
+  "Film Content",
+  "Journal"
 ];
 
+// Load saved progress or initialize
 let progress=JSON.parse(localStorage.getItem("progress"))||{
-day:1,
-streak:0,
-checks:[]
+  day:1,
+  streak:0,
+  checks:Array(habits.length).fill(false)
 };
 
 let container=document.getElementById("habits");
 
 function render(){
+  container.innerHTML="";
+  
+  habits.forEach((habit,i)=>{
+    let btn=document.createElement("button");
+    btn.innerText=habit;
+    btn.className=progress.checks[i]?"done":"notdone";
+    btn.onclick=()=>{
+      progress.checks[i]=!progress.checks[i]; // toggle
+      save();
+      render();
+      checkComplete();
+    };
+    container.appendChild(btn);
+  });
 
-container.innerHTML="";
-
-habits.forEach((habit,i)=>{
-
-let btn=document.createElement("button");
-
-btn.innerText=habit;
-
-btn.className=progress.checks[i]?"done":"notdone";
-
-btn.onclick=()=>{
-
-progress.checks[i]=!progress.checks[i];
-
-save();
-
-render();
-
-checkComplete();
-
-};
-
-container.appendChild(btn);
-
-});
-
-document.getElementById("day").innerText="Day "+progress.day+" / 49";
-
-document.getElementById("streak").innerText="🔥 Streak: "+progress.streak;
-
-document.getElementById("bar").style.width=(progress.day/49*100)+"%";
-
+  document.getElementById("day").innerText="Day "+progress.day+" / 49";
+  document.getElementById("streak").innerText="🔥 Streak: "+progress.streak;
+  document.getElementById("bar").style.width=(progress.day/49*100)+"%";
 }
 
 function checkComplete(){
-
-if(progress.checks.every(x=>x)){
-
-setTimeout(()=>{
-
-alert("All habits done! 🎉");
-
-progress.streak++;
-
-progress.day++;
-
-progress.checks=[];
-
-save();
-
-render();
-
-},300);
-
-}
-
+  if(progress.checks.every(x=>x)){
+    setTimeout(()=>{
+      alert("All habits done! 🎉");
+      progress.streak++;
+      progress.day++;
+      progress.checks=Array(habits.length).fill(false); // reset all for next day
+      save();
+      render();
+    },300);
+  }
 }
 
 function save(){
-
-localStorage.setItem("progress",JSON.stringify(progress));
-
+  localStorage.setItem("progress",JSON.stringify(progress));
 }
 
+// initialize
 render();
 
 </script>
-
 </body>
 </html>
